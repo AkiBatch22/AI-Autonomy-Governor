@@ -1,10 +1,10 @@
 """Generate synthetic execution logs for AI Employee Autonomy Governor.
 
-Run:
-    python generate_demo_data.py
+Run from the repository root:
+    python -m scripts.generate_demo_data
 
 Output:
-    demo_executions.csv
+    data/demo_executions.csv
 """
 
 from pathlib import Path
@@ -13,7 +13,11 @@ import csv
 
 SEED = 42
 N = 25_000
-OUTPUT_PATH = Path(__file__).resolve().parent / "demo_executions.csv"
+OUTPUT_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "data"
+    / "demo_executions.csv"
+)
 
 rng = np.random.default_rng(SEED)
 

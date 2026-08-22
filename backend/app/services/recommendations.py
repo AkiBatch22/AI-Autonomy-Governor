@@ -47,6 +47,12 @@ def generate_candidate_policies(
             "minimum_sample_size must be greater than 0."
         )
 
+    if confidence_thresholds is not None and not confidence_thresholds:
+        return []
+
+    if amount_limits is not None and not amount_limits:
+        return []
+
     if confidence_thresholds is None:
         confidence_thresholds = (
             DEFAULT_CONFIDENCE_THRESHOLDS
@@ -83,10 +89,10 @@ def generate_candidate_policies(
 
             candidate = {
                 "confidence_threshold":
-                    confidence_threshold,
+                    float(confidence_threshold),
 
                 "max_transaction_value":
-                    max_transaction_value,
+                    float(max_transaction_value),
 
                 "autonomous_tasks":
                     proposed["autonomous_tasks"],
@@ -156,11 +162,22 @@ def recommend_policy(
     within the customer's error tolerance.
     """
 
+    resolved_thresholds = (
+        DEFAULT_CONFIDENCE_THRESHOLDS
+        if confidence_thresholds is None
+        else confidence_thresholds
+    )
+    resolved_amount_limits = (
+        DEFAULT_AMOUNT_LIMITS
+        if amount_limits is None
+        else amount_limits
+    )
+
     candidates = generate_candidate_policies(
         df=df,
         max_error_rate=max_error_rate,
-        confidence_thresholds=confidence_thresholds,
-        amount_limits=amount_limits,
+        confidence_thresholds=resolved_thresholds,
+        amount_limits=resolved_amount_limits,
         minimum_sample_size=minimum_sample_size,
     )
 
@@ -177,15 +194,8 @@ def recommend_policy(
         "recommendation": best_policy,
         "safe_policies_tested": len(candidates),
         "total_policies_tested": (
-            len(
-                confidence_thresholds
-                or DEFAULT_CONFIDENCE_THRESHOLDS
-            )
-            *
-            len(
-                amount_limits
-                or DEFAULT_AMOUNT_LIMITS
-            )
+            len(resolved_thresholds)
+            * len(resolved_amount_limits)
         ),
     }
 
@@ -200,6 +210,9 @@ def get_top_policies(
 
     Useful later for the frontend.
     """
+
+    if top_n <= 0:
+        raise ValueError("top_n must be greater than 0.")
 
     candidates = generate_candidate_policies(
         df=df,
