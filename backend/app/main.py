@@ -26,7 +26,6 @@ local_origins = [
     "http://127.0.0.1:3000",
 ]
 
-
 production_origins = [
     origin.strip().rstrip("/")
     for origin in os.getenv(
@@ -37,15 +36,20 @@ production_origins = [
 ]
 
 
-allowed_origins = [
-    *local_origins,
-    *production_origins,
-]
-
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=[
+        *local_origins,
+        *production_origins,
+    ],
+
+    # Allows Vercel deployment-specific URLs such as:
+    # ai-autonomy-governor-xxxxx-aki-batch.vercel.app
+    allow_origin_regex=(
+        r"^https://ai-autonomy-governor-"
+        r"[a-zA-Z0-9-]+-aki-batch\.vercel\.app$"
+    ),
+
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
