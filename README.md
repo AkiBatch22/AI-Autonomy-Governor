@@ -44,6 +44,10 @@ flowchart LR
     I --> J[Governance Audit Trail]
 ```
 
+## Live Demo
+
+[Launch AI Autonomy Governor](https://ai-autonomy-governor.vercel.app)
+
 ## Demo
 
 The included demo represents **Accounts Payable AI**, an AI Employee in Finance performing Invoice Processing. Its 25,000 execution records span approximately six months and are entirely **synthetic**—they are not customer or production data.
