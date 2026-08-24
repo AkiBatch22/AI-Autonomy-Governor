@@ -5,6 +5,8 @@ from backend.app.api.agents import (
 )
 from backend.app.api.routes import router as system_router
 
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI(
     title="AI Employee Autonomy Governor",
@@ -13,6 +15,17 @@ app = FastAPI(
         "safe autonomy for AI employees."
     ),
     version="0.2.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
